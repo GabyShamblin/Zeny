@@ -1,9 +1,12 @@
 package main
 
 import (
+	//"encoding/json"
 	"log"
 	"net/http"
+	//"os"
 
+	//"github.com/go-redis/redis"
 	"github.com/gorilla/websocket"
 	"github.com/joho/godotenv"
 )
@@ -12,6 +15,9 @@ type ChatMessage struct {
 	Text string `json:"text"`
 }
 
+/*var (
+	rdb *redis.Client
+)*/
 var clients = make(map[*websocket.Conn]bool)
 var broadcaster = make(chan ChatMessage)
 var upgrader = websocket.Upgrader{
@@ -28,6 +34,9 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 	// ensure connection close when function returns
 	defer ws.Close()
 	clients[ws] = true
+	/*if rdb.Exists("chat_messages").Val() != 0 {
+		sendPreviousMessages(ws)
+	}*/
 
 	for {
 		var msg ChatMessage
@@ -41,14 +50,57 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 		broadcaster <- msg
 	}
 }
+
+/*func sendPreviousMessages(ws *websocket.Conn) {
+	chatMessages, err := rdb.LRange("chat_messages", 0, -1).Result()
+	if err != nil {
+		panic(err)
+	}
+
+	// send previous messages
+	for _, chatMessage := range chatMessages {
+		var msg ChatMessage
+		json.Unmarshal([]byte(chatMessage), &msg)
+		messageClient(ws, msg)
+	}
+}*/
 func handleMessages() {
 	for {
+
 		// grab any next message from channel
 		msg := <-broadcaster
+		switch msg.Text {
+		case "Veterans":
+			msg.Text = "For More Community Experience: Link to Veterans@VMware POD"
+		case "Pride":
+			msg.Text = "For More Community Experience: Link to Pride@VMware POD"
+		case "Disability":
+			msg.Text = "For More Community Experience: Link to Disability@VMware POD"
+		case "Black":
+			msg.Text = "For More Community Experience: Link to Black@VMware POD"
+		case "Women":
+			msg.Text = "For More Community Experience: Link to Women@VMware POD"
+		case "Asian":
+			msg.Text = "For More Community Experience: Link to Asian@VMware POD"
+		case "Latinos":
+			msg.Text = "For More Community Experience: Link to Latinos@VMware POD"
 
+		}
+		//storeInRedis(msg)
 		messageClients(msg)
 	}
 }
+
+/*func storeInRedis(msg ChatMessage) {
+	json, err := json.Marshal(msg)
+	if err != nil {
+		panic(err)
+	}
+
+	if err := rdb.RPush("chat_messages", json).Err(); err != nil {
+		panic(err)
+	}
+}*/
 func messageClients(msg ChatMessage) {
 	// send to every client currently connected
 	for client := range clients {
@@ -71,11 +123,12 @@ func main() {
 	}
 
 	port := "8080"
-
+	//redisURL := os.Getenv("REDIS_URL")
+	//opt, err := redis.ParseURL(redisURL)
 	if err != nil {
 		panic(err)
 	}
-
+	//rdb = redis.NewClient(opt)
 	http.Handle("/", http.FileServer(http.Dir("./public")))
 	http.HandleFunc("/websocket", handleConnections)
 	go handleMessages()
