@@ -20,7 +20,7 @@ body {
 #input-text {
 	background: #B1D4F8;
 	border-radius: 80px;
-	border: 0;
+	border: 1px solid #000;
 	width: 200px;
 	padding: 5px;
 }
