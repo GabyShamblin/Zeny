@@ -1,6 +1,33 @@
+/* @font-face {
+	font-family: zcool-xiaowei,sans-serif;
+	font-weight: 400;
+	font-style: normal;
+} */
+
 body {
 	background: linear-gradient(180deg, #A18CD1 18.53%, #FFFFFF 97.35%);
 	background-attachment: fixed;
+}
+
+#chat-form {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+	width: 100%;
+}
+
+#input-text {
+	background: #B1D4F8;
+	border-radius: 80px;
+	border: 0;
+	width: 200px;
+	padding: 5px;
+}
+
+#send-button {
+	background: none;
+	border: 0;
 }
 
 footer {
