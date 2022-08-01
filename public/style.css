@@ -1,0 +1,23 @@
+body {
+	background: linear-gradient(180deg, #A18CD1 18.53%, #FFFFFF 97.35%);
+	background-attachment: fixed;
+}
+
+footer {
+	position: fixed;
+	width: 100%;
+	bottom: 0;
+	left: 0;
+	background: #173655;
+}
+
+.ellipse {
+	position: fixed;
+	width: 120%;
+	height: 50%;
+	border-radius: 50%;
+	left: -10%;
+	bottom: -35%;
+
+	background: #B1D5F8;
+}
